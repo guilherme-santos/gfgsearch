@@ -13,8 +13,8 @@ type Product struct {
 // Options contains some properties that can be available or not in
 // the request and it'll be used during the search phase.
 type Options struct {
-	Page    int32
-	PerPage int32
+	Page    int
+	PerPage int
 	// Filter is a map that contains the field name and the text to filter.
 	Filter map[string]string
 	// SortBy is a map that contains the field name and the order.
