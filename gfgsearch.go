@@ -29,3 +29,12 @@ type Result struct {
 type Searcher interface {
 	Search(ctx context.Context, term string, opt Options) (*Result, error)
 }
+
+// IsFieldSearchable checks if the field can be filtered (if it's a valid field).
+func IsFieldSearchable(field string) bool {
+	switch field {
+	case "title", "brand", "price", "stock":
+		return true
+	}
+	return false
+}
