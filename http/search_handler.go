@@ -51,6 +51,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			code:    "invalid_json",
 			message: err.Error(),
 		})
+        return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
