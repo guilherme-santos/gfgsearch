@@ -108,7 +108,7 @@ func (s *SearchService) Search(ctx context.Context, term string, opt gfgsearch.O
 	searchSvc.From((opt.Page - 1) * opt.PerPage)
 	searchSvc.Size(opt.PerPage)
 
-	for field, value := range opt.Filter {
+	for field, value := range opt.SortBy {
 		var ascending bool
 		if value == "asc" {
 			ascending = true

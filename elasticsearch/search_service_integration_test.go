@@ -189,7 +189,7 @@ func TestSearch_SortByPriceAsc(t *testing.T) {
 	}
 }
 
-func TestSearch_SortByStockDesc(t *testing.T) {
+func TestSearch_SortByPriceDesc(t *testing.T) {
 	ctx := context.Background()
 	esClient, cleanup := esClient(t)
 	defer cleanup()
@@ -206,7 +206,7 @@ func TestSearch_SortByStockDesc(t *testing.T) {
 		Page:    1,
 		PerPage: 5,
 		SortBy: map[string]string{
-			"stock": "desc",
+			"price": "desc",
 		},
 	})
 
@@ -218,6 +218,6 @@ func TestSearch_SortByStockDesc(t *testing.T) {
 	assert.Len(t, resp.Data, 5)
 
 	for i, p := range resp.Data {
-		assert.EqualValues(t, 10-i, p.Stock)
+		assert.EqualValues(t, (10-i)*100, p.Price)
 	}
 }
