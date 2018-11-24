@@ -4,7 +4,6 @@ package elasticsearch_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/guilherme-santos/gfgsearch"
@@ -34,12 +33,61 @@ func TestSearch(t *testing.T) {
 
 	assert.EqualValues(t, 10, resp.Total)
 	assert.Len(t, resp.Data, 5)
+}
 
-	for i, p := range resp.Data {
-		id := i + 1
-		assert.Equal(t, fmt.Sprintf("product %d", id), p.Title)
-		assert.Equal(t, fmt.Sprintf("brand %d", id), p.Brand)
-		assert.EqualValues(t, id*100, p.Price)
-		assert.EqualValues(t, id, p.Stock)
+func TestSearch_WithTerm(t *testing.T) {
+	ctx := context.Background()
+	esClient, cleanup := esClient(t)
+	defer cleanup()
+
+	searchSvc := elasticsearch.NewSearchService(esClient)
+	searchSvc.InitMapping(ctx)
+
+	loadESData(t, esClient, "products.json")
+
+	resp, err := searchSvc.Search(ctx, "t-shirt", gfgsearch.Options{
+		Page:    1,
+		PerPage: 5,
+	})
+
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
+
+	assert.EqualValues(t, 3, resp.Total)
+	assert.Len(t, resp.Data, 3)
+
+	products := map[string]gfgsearch.Product{
+		"basic t-shirt": {
+			Title: "basic t-shirt",
+			Brand: "hackett london",
+			Price: 100,
+			Stock: 1,
+		},
+		"printed t-shirt": {
+			Title: "printed t-shirt",
+			Brand: "reebok",
+			Price: 200,
+			Stock: 2,
+		},
+		"business shirt": {
+			Title: "business shirt",
+			Brand: "tommy hilfiger",
+			Price: 300,
+			Stock: 3,
+		},
+	}
+
+	for _, p := range resp.Data {
+		expectedProduct, ok := products[p.Title]
+		if !assert.True(t, ok) {
+			t.Logf("Product %q was not expected", p.Title)
+			t.FailNow()
+		}
+
+		assert.Equal(t, expectedProduct.Title, p.Title)
+		assert.Equal(t, expectedProduct.Brand, p.Brand)
+		assert.Equal(t, expectedProduct.Price, p.Price)
+		assert.Equal(t, expectedProduct.Stock, p.Stock)
 	}
 }

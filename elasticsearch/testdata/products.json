@@ -1,61 +1,61 @@
 [
   {
-    "title": "product 1",
-    "brand": "brand 1",
+    "title": "basic t-shirt",
+    "brand": "hackett london",
     "price": 100,
     "stock": 1
   },
   {
-    "title": "product 2",
-    "brand": "brand 2",
+    "title": "printed t-shirt",
+    "brand": "reebok",
     "price": 200,
     "stock": 2
   },
   {
-    "title": "product 3",
-    "brand": "brand 3",
+    "title": "business shirt",
+    "brand": "tommy hilfiger",
     "price": 300,
     "stock": 3
   },
   {
-    "title": "product 4",
-    "brand": "brand 4",
+    "title": "leather jacket",
+    "brand": "polo ralph lauren",
     "price": 400,
     "stock": 4
   },
   {
-    "title": "product 5",
-    "brand": "brand 5",
+    "title": "denim jacket",
+    "brand": "calvin klein",
     "price": 500,
     "stock": 5
   },
   {
-    "title": "product 6",
-    "brand": "brand 6",
+    "title": "blazer",
+    "brand": "nike",
     "price": 600,
     "stock": 6
   },
   {
-    "title": "product 7",
-    "brand": "brand 7",
+    "title": "trench coat",
+    "brand": "hollister",
     "price": 700,
     "stock": 7
   },
   {
-    "title": "product 8",
-    "brand": "brand 8",
+    "title": "wool coat",
+    "brand": "superdry",
     "price": 800,
     "stock": 8
   },
   {
-    "title": "product 9",
-    "brand": "brand 9",
+    "title": "sweatshirt",
+    "brand": "adidas",
     "price": 900,
     "stock": 9
   },
   {
-    "title": "product 10",
-    "brand": "brand 10",
+    "title": "cardigan",
+    "brand": "abercrombie & fitch",
     "price": 1000,
     "stock": 10
   }
