@@ -37,7 +37,7 @@ func main() {
 	populate := flag.String("populate", "", "use filename provided to populate ElasticSearch")
 	flag.Parse()
 
-	if populate != nil {
+	if *populate != "" {
 		filename := *populate
 
 		err = searchSvc.LoadFile(filename)
