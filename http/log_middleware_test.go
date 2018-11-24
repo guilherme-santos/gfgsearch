@@ -9,6 +9,8 @@ import (
 	"testing"
 
 	gfghttp "github.com/guilherme-santos/gfgsearch/http"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLogMiddleware(t *testing.T) {
@@ -28,9 +30,6 @@ func TestLogMiddleware(t *testing.T) {
 
 	h.ServeHTTP(w, req)
 
-	expectedLog := regexp.MustCompile(`127\.0\.0\.1 \[[0-9]+(.[0-9]+)?[nµm]?s\] "GET /search HTTP/1.1" 201 Created "GDF-HttpClient/1.0"`)
-	matched := expectedLog.MatchString(buf.String())
-	if !matched {
-		t.Fatalf("Log doesn't match what was expected: %q", buf.String())
-	}
+	logRegex := regexp.MustCompile(`127\.0\.0\.1 \[[0-9]+(.[0-9]+)?[nµm]?s\] "GET /search HTTP/1.1" 201 Created "GDF-HttpClient/1.0"`)
+	assert.Regexp(t, logRegex, buf.String())
 }

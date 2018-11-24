@@ -4,31 +4,29 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/guilherme-santos/gfgsearch"
 	gfghttp "github.com/guilherme-santos/gfgsearch/http"
 	"github.com/guilherme-santos/gfgsearch/mock"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSearchHandler(t *testing.T) {
 	searcher := mock.NewSearcher(t)
 	searcher.SearchFn = func(ctx context.Context, term string, opt gfgsearch.Options) (*gfgsearch.Result, error) {
-		if !strings.EqualFold("product", term) {
-			t.Fatalf("Expected term to be %s but got %s", "product", term)
+		assert.Equal(t, "product", term)
+		assert.Equal(t, 2, opt.Page)
+		assert.Equal(t, 10, opt.PerPage)
+		if assert.NotNil(t, opt.Filter["brand"]) {
+			assert.Equal(t, "santos", opt.Filter["brand"])
 		}
-		if opt.Page != 2 {
-			t.Fatalf("Expected page to be %d but got %d", 2, opt.Page)
+		if assert.NotNil(t, opt.SortBy["price"]) {
+			assert.Equal(t, "desc", opt.SortBy["price"])
 		}
-		if opt.PerPage != 10 {
-			t.Fatalf("Expected per_page to be %d but got %d", 10, opt.PerPage)
-		}
-		if brand, ok := opt.Filter["brand"]; !ok || brand != "santos" {
-			t.Fatalf("Expected filter brand to be %s but got %s", "a", brand)
-		}
-		if order, ok := opt.SortBy["price"]; !ok || order != "desc" {
-			t.Fatalf("Expected price order to be %s but got %s", "asc", order)
+		if t.Failed() {
+			t.FailNow()
 		}
 
 		return &gfgsearch.Result{
@@ -50,14 +48,9 @@ func TestSearchHandler(t *testing.T) {
 	h := gfghttp.NewSearchHandler(searcher)
 	h.ServeHTTP(w, req)
 
-	if !searcher.SearchInvoked {
-		t.Fatal("Expected to call searcher.Search")
-	}
-	if w.Code != http.StatusOK {
-		t.Fatalf("Expected status code to be %d but got %d", http.StatusOK, w.Code)
-	}
+	assert.True(t, searcher.SearchInvoked)
+	assert.Equal(t, http.StatusOK, w.Code)
+
 	expectedBody := `{"total":100,"data":[{"title":"product-a","brand":"brand-a","price":1234,"stock":12}]}`
-	if !strings.EqualFold(expectedBody, w.Body.String()) {
-		t.Fatalf("Expected body to be %q but got %q", expectedBody, w.Body.String())
-	}
+	assert.Equal(t, expectedBody, w.Body.String())
 }

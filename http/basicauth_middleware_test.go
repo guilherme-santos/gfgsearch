@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	gfghttp "github.com/guilherme-santos/gfgsearch/http"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBasicAuthMiddleware(t *testing.T) {
@@ -23,12 +25,8 @@ func TestBasicAuthMiddleware(t *testing.T) {
 
 	h.ServeHTTP(w, req)
 
-	if w.Code != http.StatusCreated {
-		t.Fatalf("Expected status code %d but got %d", http.StatusCreated, w.Code)
-	}
-	if !handlerCalled {
-		t.Fatal("Dummy handler was expected to be called")
-	}
+	assert.Equal(t, http.StatusCreated, w.Code)
+	assert.True(t, handlerCalled)
 }
 
 func TestBasicAuthMiddleware_NoAuthentication(t *testing.T) {
@@ -45,12 +43,8 @@ func TestBasicAuthMiddleware_NoAuthentication(t *testing.T) {
 
 	h.ServeHTTP(w, req)
 
-	if w.Code != http.StatusUnauthorized {
-		t.Fatalf("Expected status code %d but got %d", http.StatusUnauthorized, w.Code)
-	}
-	if handlerCalled {
-		t.Fatal("Dummy handler was not expected to be called")
-	}
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.False(t, handlerCalled)
 }
 
 func TestBasicAuthMiddleware_WrongPassword(t *testing.T) {
@@ -68,10 +62,6 @@ func TestBasicAuthMiddleware_WrongPassword(t *testing.T) {
 
 	h.ServeHTTP(w, req)
 
-	if w.Code != http.StatusUnauthorized {
-		t.Fatalf("Expected status code %d but got %d", http.StatusUnauthorized, w.Code)
-	}
-	if handlerCalled {
-		t.Fatal("Dummy handler was not expected to be called")
-	}
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.False(t, handlerCalled)
 }

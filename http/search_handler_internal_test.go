@@ -3,6 +3,8 @@ package http
 import (
 	"net/url"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetOptionsFrom(t *testing.T) {
@@ -13,50 +15,38 @@ func TestGetOptionsFrom(t *testing.T) {
 	params.Set(sortParam, "title,-brand,price,-stock,invalid,-wrong")
 
 	opt := getOptionsFrom(params)
-	if opt.Page != 2 {
-		t.Fatalf("Expected page to be %d but got %d", 2, opt.Page)
-	}
-	if opt.PerPage != 10 {
-		t.Fatalf("Expected per_page to be %d but got %d", 10, opt.PerPage)
-	}
+	assert.Equal(t, 2, opt.Page)
+	assert.Equal(t, 10, opt.PerPage)
 	// Filters
-	if title, ok := opt.Filter["title"]; !ok || title != "a" {
-		t.Fatalf("Expected filter title to be %s but got %s", "a", title)
+	if assert.NotNil(t, opt.Filter["title"]) {
+		assert.Equal(t, "a", opt.Filter["title"])
 	}
-	if brand, ok := opt.Filter["brand"]; !ok || brand != "b" {
-		t.Fatalf("Expected filter brand to be %s but got %s", "b", brand)
+	if assert.NotNil(t, opt.Filter["brand"]) {
+		assert.Equal(t, "b", opt.Filter["brand"])
 	}
-	if price, ok := opt.Filter["price"]; !ok || price != "c" {
-		t.Fatalf("Expected filter price to be %s but got %s", "c", price)
+	if assert.NotNil(t, opt.Filter["price"]) {
+		assert.Equal(t, "c", opt.Filter["price"])
 	}
-	if stock, ok := opt.Filter["stock"]; !ok || stock != "d" {
-		t.Fatalf("Expected filter stock to be %s but got %s", "d", stock)
+	if assert.NotNil(t, opt.Filter["stock"]) {
+		assert.Equal(t, "d", opt.Filter["stock"])
 	}
-	if _, ok := opt.Filter["invalid"]; ok {
-		t.Fatal("Field invalid is not searchable and shouldn't be in the filter")
-	}
+	assert.Empty(t, opt.Filter["invalid"])
 	// SortBy
-	if order, ok := opt.SortBy["title"]; !ok || order != "asc" {
-		t.Fatalf("Expected title order to be %s but got %s", "asc", order)
+	if assert.NotNil(t, opt.SortBy["title"]) {
+		assert.Equal(t, "asc", opt.SortBy["title"])
 	}
-	if order, ok := opt.SortBy["brand"]; !ok || order != "desc" {
-		t.Fatalf("Expected brand order to be %s but got %s", "asc", order)
+	if assert.NotNil(t, opt.SortBy["brand"]) {
+		assert.Equal(t, "desc", opt.SortBy["brand"])
 	}
-	if order, ok := opt.SortBy["price"]; !ok || order != "asc" {
-		t.Fatalf("Expected price order to be %s but got %s", "asc", order)
+	if assert.NotNil(t, opt.SortBy["price"]) {
+		assert.Equal(t, "asc", opt.SortBy["price"])
 	}
-	if order, ok := opt.SortBy["stock"]; !ok || order != "desc" {
-		t.Fatalf("Expected stock order to be %s but got %s", "asc", order)
+	if assert.NotNil(t, opt.SortBy["stock"]) {
+		assert.Equal(t, "desc", opt.SortBy["stock"])
 	}
-	if _, ok := opt.SortBy["invalid"]; ok {
-		t.Fatal("Field invalid is not searchable and shouldn't be in the sort")
-	}
-	if _, ok := opt.SortBy["-wrong"]; ok {
-		t.Fatal("Field -wrong is not searchable and shouldn't be in the sort")
-	}
-	if _, ok := opt.SortBy["wrong"]; ok {
-		t.Fatal("Field wrong is not searchable and shouldn't be in the sort")
-	}
+	assert.Empty(t, opt.SortBy["invalid"])
+	assert.Empty(t, opt.SortBy["-wrong"])
+	assert.Empty(t, opt.SortBy["wrong"])
 }
 
 func TestGetOptionsFrom_DefaultValues(t *testing.T) {
@@ -65,10 +55,6 @@ func TestGetOptionsFrom_DefaultValues(t *testing.T) {
 	params.Set(perPageParam, "invalid")
 
 	opt := getOptionsFrom(params)
-	if opt.Page != 1 {
-		t.Fatalf("Expected page to be %d but got %d", 1, opt.Page)
-	}
-	if opt.PerPage != DefaultPerPage {
-		t.Fatalf("Expected per_page to be %d but got %d", DefaultPerPage, opt.PerPage)
-	}
+	assert.Equal(t, 1, opt.Page)
+	assert.Equal(t, DefaultPerPage, opt.PerPage)
 }
