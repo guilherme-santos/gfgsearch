@@ -21,11 +21,15 @@ type Options struct {
 	SortBy map[string]string
 }
 
+// Result contains the total number of results available for the specific
+// search and also the page asked.
 type Result struct {
 	Total int32     `json:"total"`
 	Data  []Product `json:"data"`
 }
 
+// Searcher is an interface that need to be implemented to provide a list
+// of products.
 type Searcher interface {
 	Search(ctx context.Context, term string, opt Options) (*Result, error)
 }
