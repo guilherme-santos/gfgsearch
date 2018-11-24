@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -31,7 +30,7 @@ func esClient(t *testing.T) (*elastic.Client, func()) {
 		elastic.SetURL(esURL),
 		elastic.SetSniff(false),
 		elastic.SetHttpClient(httpClient),
-		elastic.SetTraceLog(log.New(os.Stdout, "", 0)),
+		// elastic.SetTraceLog(log.New(os.Stdout, "", 0)),
 	)
 	if !assert.NoError(t, err) {
 		t.FailNow()
