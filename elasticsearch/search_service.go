@@ -58,7 +58,7 @@ func (s *SearchService) InitMapping(ctx context.Context) error {
 func (s *SearchService) Search(ctx context.Context, term string, opt gfgsearch.Options) (*gfgsearch.Result, error) {
 	query := elastic.NewBoolQuery()
 	if term != "" {
-		query.Must(elastic.NewTermQuery("title", term))
+		query.Must(elastic.NewMatchQuery("title", term))
 	} else {
 		query.Must(elastic.NewMatchAllQuery())
 	}
