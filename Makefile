@@ -8,5 +8,11 @@ help: ## Display this help
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "    \033[36m%-10s\033[0m - %s\n", $$1, $$2}'
 	@ echo
 
+.env:
+	cp .env.dist .env
+
 test: ## Execute unit tests
 	go test -race ${RUN_TESTCASE} ./...
+
+integration-test: .env ## Execute integration tests
+	@export `cat .env | xargs`; go test -race -tags integration ${RUN_TESTCASE} ./...
