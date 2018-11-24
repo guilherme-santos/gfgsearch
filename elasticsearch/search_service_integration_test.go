@@ -45,7 +45,7 @@ func TestSearch_FilterByProductTitle(t *testing.T) {
 
 	loadESData(t, esClient, "products.json")
 
-	resp, err := searchSvc.Search(ctx, "t-shirt", gfgsearch.Options{
+	resp, err := searchSvc.Search(ctx, "shirt", gfgsearch.Options{
 		Page:    1,
 		PerPage: 5,
 	})
