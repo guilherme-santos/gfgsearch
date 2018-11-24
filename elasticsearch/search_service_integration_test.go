@@ -35,7 +35,7 @@ func TestSearch(t *testing.T) {
 	assert.Len(t, resp.Data, 5)
 }
 
-func TestSearch_WithTerm(t *testing.T) {
+func TestSearch_FilterByProductTitle(t *testing.T) {
 	ctx := context.Background()
 	esClient, cleanup := esClient(t)
 	defer cleanup()
@@ -62,19 +62,19 @@ func TestSearch_WithTerm(t *testing.T) {
 			Title: "basic t-shirt",
 			Brand: "hackett london",
 			Price: 100,
-			Stock: 1,
+			Stock: 10,
 		},
 		"printed t-shirt": {
 			Title: "printed t-shirt",
-			Brand: "reebok",
+			Brand: "tommy hilfiger",
 			Price: 200,
-			Stock: 2,
+			Stock: 9,
 		},
 		"business shirt": {
 			Title: "business shirt",
 			Brand: "tommy hilfiger",
 			Price: 300,
-			Stock: 3,
+			Stock: 8,
 		},
 	}
 
