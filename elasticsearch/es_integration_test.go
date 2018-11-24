@@ -4,13 +4,10 @@ package elasticsearch_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
 
@@ -50,31 +47,4 @@ func esClient(t *testing.T) (*elastic.Client, func()) {
 	}
 
 	return esClient, cleanupFn
-}
-
-func loadESData(t *testing.T, esClient *elastic.Client, filename string) {
-	data, err := ioutil.ReadFile(filepath.Join("testdata", filename))
-	if !assert.NoError(t, err) {
-		t.FailNow()
-	}
-
-	var products []map[string]interface{}
-
-	err = json.Unmarshal(data, &products)
-	if !assert.NoError(t, err) {
-		t.FailNow()
-	}
-
-	bulk := esClient.Bulk().
-		Index(elasticsearch.Index).
-		Type(elasticsearch.Type)
-	for _, product := range products {
-		bulk.Add(
-			elastic.NewBulkIndexRequest().Doc(product),
-		)
-	}
-
-	ctx := context.Background()
-	bulk.Do(ctx)
-	esClient.Refresh().Index(elasticsearch.Index).Do(ctx)
 }

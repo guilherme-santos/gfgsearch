@@ -4,6 +4,7 @@ package elasticsearch_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 
 	"github.com/guilherme-santos/gfgsearch"
@@ -20,7 +21,10 @@ func TestSearch(t *testing.T) {
 	searchSvc := elasticsearch.NewSearchService(esClient)
 	searchSvc.InitMapping(ctx)
 
-	loadESData(t, esClient, "products.json")
+	err := searchSvc.LoadFile(filepath.Join("testdata", "products.json"))
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
 
 	resp, err := searchSvc.Search(ctx, "", gfgsearch.Options{
 		Page:    1,
@@ -43,7 +47,10 @@ func TestSearch_FilterByProductTitle(t *testing.T) {
 	searchSvc := elasticsearch.NewSearchService(esClient)
 	searchSvc.InitMapping(ctx)
 
-	loadESData(t, esClient, "products.json")
+	err := searchSvc.LoadFile(filepath.Join("testdata", "products.json"))
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
 
 	resp, err := searchSvc.Search(ctx, "shirt", gfgsearch.Options{
 		Page:    1,
@@ -100,7 +107,10 @@ func TestSearch_FilterByBrand(t *testing.T) {
 	searchSvc := elasticsearch.NewSearchService(esClient)
 	searchSvc.InitMapping(ctx)
 
-	loadESData(t, esClient, "products.json")
+	err := searchSvc.LoadFile(filepath.Join("testdata", "products.json"))
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
 
 	resp, err := searchSvc.Search(ctx, "t-shirt", gfgsearch.Options{
 		Page:    1,
@@ -154,7 +164,10 @@ func TestSearch_SortByPriceAsc(t *testing.T) {
 	searchSvc := elasticsearch.NewSearchService(esClient)
 	searchSvc.InitMapping(ctx)
 
-	loadESData(t, esClient, "products.json")
+	err := searchSvc.LoadFile(filepath.Join("testdata", "products.json"))
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
 
 	resp, err := searchSvc.Search(ctx, "", gfgsearch.Options{
 		Page:    1,
@@ -184,7 +197,10 @@ func TestSearch_SortByStockDesc(t *testing.T) {
 	searchSvc := elasticsearch.NewSearchService(esClient)
 	searchSvc.InitMapping(ctx)
 
-	loadESData(t, esClient, "products.json")
+	err := searchSvc.LoadFile(filepath.Join("testdata", "products.json"))
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
 
 	resp, err := searchSvc.Search(ctx, "", gfgsearch.Options{
 		Page:    1,

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	"github.com/guilherme-santos/gfgsearch"
@@ -53,6 +54,38 @@ func (s *SearchService) InitMapping(ctx context.Context) error {
 		}).
 		Do(ctx)
 	return err
+}
+
+func (s *SearchService) LoadFile(filename string) error {
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	var products []map[string]interface{}
+
+	err = json.Unmarshal(data, &products)
+	if err != nil {
+		return err
+	}
+
+	bulk := s.esClient.Bulk().Index(Index).Type(Type)
+
+	for _, product := range products {
+		bulk.Add(
+			elastic.NewBulkIndexRequest().Doc(product),
+		)
+	}
+
+	ctx := context.Background()
+
+	_, err = bulk.Do(ctx)
+	if err != nil {
+		return err
+	}
+
+	s.esClient.Refresh().Index(Index).Do(ctx)
+	return nil
 }
 
 func (s *SearchService) Search(ctx context.Context, term string, opt gfgsearch.Options) (*gfgsearch.Result, error) {
