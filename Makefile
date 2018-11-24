@@ -8,8 +8,14 @@ help: ## Display this help
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "    \033[36m%-10s\033[0m - %s\n", $$1, $$2}'
 	@ echo
 
-.env:
+.env: ## Copy default config from .env.dist to .env (don't overwrite)
 	cp .env.dist .env
+
+run: .env build ## Run gfgsearch using .env config
+	@export `cat .env | xargs`; ./gfgsearch
+
+build:
+	go build -o gfgsearch cmd/gfgsearch/main.go
 
 test: ## Execute unit tests
 	go test -race ${RUN_TESTCASE} ./...
