@@ -14,6 +14,9 @@ help: ## Display this help
 run: .env build ## Run gfgsearch using .env config
 	@export `cat .env | xargs`; ./gfgsearch
 
+populate: .env build
+	@export `cat .env | xargs`; ./gfgsearch -populate elasticsearch/testdata/products.json
+
 build:
 	go build -o gfgsearch cmd/gfgsearch/main.go
 

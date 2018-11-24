@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -31,8 +33,24 @@ func main() {
 	}
 
 	searchSvc := elasticsearch.NewSearchService(esClient)
-	searchHandler := gfghttp.NewSearchHandler(searchSvc)
 
+	populate := flag.String("populate", "", "use filename provided to populate ElasticSearch")
+	flag.Parse()
+
+	if populate != nil {
+		filename := *populate
+
+		err = searchSvc.LoadFile(filename)
+		if err != nil {
+			fmt.Printf("Unable to populate ElasticSearch: %s\n", err)
+			return
+		}
+
+		fmt.Printf("File %q loaded successfully\n", filename)
+		return
+	}
+
+	searchHandler := gfghttp.NewSearchHandler(searchSvc)
 	serverMux := http.NewServeMux()
 	serverMux.Handle("/v1/search/products",
 		gfghttp.LogMiddleware(
