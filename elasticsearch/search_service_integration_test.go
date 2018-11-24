@@ -145,3 +145,33 @@ func TestSearch_FilterByBrand(t *testing.T) {
 		assert.Equal(t, expectedProduct.Stock, p.Stock)
 	}
 }
+
+func TestSearch_SortByPriceAsc(t *testing.T) {
+	ctx := context.Background()
+	esClient, cleanup := esClient(t)
+	defer cleanup()
+
+	searchSvc := elasticsearch.NewSearchService(esClient)
+	searchSvc.InitMapping(ctx)
+
+	loadESData(t, esClient, "products.json")
+
+	resp, err := searchSvc.Search(ctx, "", gfgsearch.Options{
+		Page:    1,
+		PerPage: 5,
+		SortBy: map[string]string{
+			"price": "asc",
+		},
+	})
+
+	if !assert.NoError(t, err) {
+		t.FailNow()
+	}
+
+	assert.EqualValues(t, 10, resp.Total)
+	assert.Len(t, resp.Data, 5)
+
+	for i, p := range resp.Data {
+		assert.EqualValues(t, (i+1)*100, p.Price)
+	}
+}
