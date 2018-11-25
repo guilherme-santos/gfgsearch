@@ -9,10 +9,10 @@ RUN apk update \
 
 WORKDIR /go/src/github.com/guilherme-santos/gfgsearch
 
-COPY Makefile Gopkg.toml Gopkg.lock ./
+COPY Gopkg.toml Gopkg.lock ./
 RUN dep ensure -vendor-only
 COPY . ./
-RUN make test build-static
+RUN make build-static
 
 # Final docker image
 

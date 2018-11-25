@@ -22,7 +22,7 @@ build: ## Build gfgsearch
 	go build -o gfgsearch cmd/gfgsearch/main.go
 
 build-static: ## Build gfgsearch statically
-	CGO_ENABLED=0 go build -a -installsuffix cgo -o gfgsearch cmd/gfgsearch/main.go
+	CGO_ENABLED=0 go build -v -a -installsuffix cgo -o gfgsearch cmd/gfgsearch/main.go
 
 test: ## Execute unit tests
 	go test -race ${RUN_TESTCASE} ./...
