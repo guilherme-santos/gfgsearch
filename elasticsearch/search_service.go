@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"time"
 
 	"github.com/guilherme-santos/gfgsearch"
 
@@ -19,10 +18,10 @@ var (
 
 // SearchService is an elasticsearch implementation of gfgsearch.Searcher interface.
 type SearchService struct {
-	esClient *elastic.Client
+	esClient *Client
 }
 
-func NewSearchService(esClient *elastic.Client) *SearchService {
+func NewSearchService(esClient *Client) *SearchService {
 	return &SearchService{
 		esClient: esClient,
 	}
@@ -107,7 +106,7 @@ func (s *SearchService) Search(ctx context.Context, term string, opt gfgsearch.O
 	searchSvc := s.esClient.Search()
 	searchSvc.Index(Index)
 	searchSvc.Type(Type)
-	searchSvc.Timeout(time.Second.String())
+	searchSvc.Timeout(Timeout.String())
 	searchSvc.Query(query)
 	searchSvc.From((opt.Page - 1) * opt.PerPage)
 	searchSvc.Size(opt.PerPage)

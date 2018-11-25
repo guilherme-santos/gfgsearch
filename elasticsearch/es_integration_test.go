@@ -6,29 +6,19 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
-	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/guilherme-santos/gfgsearch/elasticsearch"
 
-	"github.com/olivere/elastic"
 	"github.com/stretchr/testify/assert"
 )
 
-func esClient(t *testing.T) (*elastic.Client, func()) {
+func esClient(t *testing.T) (*elasticsearch.Client, func()) {
 	esURL := os.Getenv("ELASTICSEARCH_URL")
-	httpClient := &http.Client{
-		Timeout: 2 * time.Second,
-	}
 
-	esClient, err := elastic.NewClient(
-		elastic.SetURL(esURL),
-		elastic.SetSniff(false),
-		elastic.SetHttpClient(httpClient),
-		// elastic.SetTraceLog(log.New(os.Stdout, "", 0)),
-	)
+	esClient, err := elasticsearch.NewClient(esURL)
 	if !assert.NoError(t, err) {
 		t.FailNow()
 	}

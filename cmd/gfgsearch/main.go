@@ -4,14 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 
 	"github.com/guilherme-santos/gfgsearch/elasticsearch"
 	gfghttp "github.com/guilherme-santos/gfgsearch/http"
-
-	"github.com/olivere/elastic"
 )
 
 func main() {
@@ -19,15 +15,7 @@ func main() {
 	esURL := os.Getenv("ELASTICSEARCH_URL")
 	log := log.New(os.Stdout, "", log.LstdFlags)
 
-	httpClient := &http.Client{
-		Timeout: 2 * time.Second,
-	}
-
-	esClient, err := elastic.NewClient(
-		elastic.SetURL(esURL),
-		elastic.SetSniff(false),
-		elastic.SetHttpClient(httpClient),
-	)
+	esClient, err := elasticsearch.NewClient(esURL)
 	if err != nil {
 		log.Fatalln("Unable to connect to ElasticSearch:", err)
 	}
