@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -23,6 +24,8 @@ func main() {
 	}
 
 	searchSvc := elasticsearch.NewSearchService(esClient)
+	// Be sure always when the app run we have mapping created.
+	searchSvc.InitMapping(context.Background())
 
 	populate := flag.String("populate", "", "use filename provided to populate ElasticSearch")
 	flag.Parse()
