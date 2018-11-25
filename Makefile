@@ -14,10 +14,10 @@ help: ## Display this help
 run: .env build ## Run gfgsearch using .env config
 	@export `cat .env | xargs`; ./gfgsearch
 
-populate: .env build
+populate: .env build ## Populate elasticsearch using elasticsearch/testdata/products.json file
 	@export `cat .env | xargs`; ./gfgsearch -populate elasticsearch/testdata/products.json
 
-build:
+build: ## Build gfgsearch
 	go build -o gfgsearch cmd/gfgsearch/main.go
 
 test: ## Execute unit tests
@@ -25,3 +25,5 @@ test: ## Execute unit tests
 
 integration-test: .env ## Execute integration tests
 	@export `cat .env | xargs`; go test -race -tags integration ${RUN_TESTCASE} ./...
+
+.PHONY: help run populate build build-static test integration-test
