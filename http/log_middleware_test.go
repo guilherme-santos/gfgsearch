@@ -14,10 +14,12 @@ import (
 )
 
 func TestLogMiddleware(t *testing.T) {
+	middleware := gfghttp.LogMiddleware()
+
 	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 	})
-	h = gfghttp.LogMiddleware(h)
+	h = middleware(h)
 
 	var buf bytes.Buffer
 	gfghttp.Logger = log.New(&buf, "", 0)

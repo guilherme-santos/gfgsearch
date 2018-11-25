@@ -11,13 +11,14 @@ import (
 )
 
 func TestBasicAuthMiddleware(t *testing.T) {
-	var handlerCalled bool
+	middleware := gfghttp.BasicAuthMiddleware("search", "gfc")
 
+	var handlerCalled bool
 	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		handlerCalled = true
 		w.WriteHeader(http.StatusCreated)
 	})
-	h = gfghttp.BasicAuthMiddleware(h, "search", "gfc")
+	h = middleware(h)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "https://global-fashion-group.com/search", nil)
@@ -30,13 +31,14 @@ func TestBasicAuthMiddleware(t *testing.T) {
 }
 
 func TestBasicAuthMiddleware_NoAuthentication(t *testing.T) {
-	var handlerCalled bool
+	middleware := gfghttp.BasicAuthMiddleware("search", "gfc")
 
+	var handlerCalled bool
 	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		handlerCalled = true
 		w.WriteHeader(http.StatusCreated)
 	})
-	h = gfghttp.BasicAuthMiddleware(h, "search", "gfc")
+	h = middleware(h)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "https://global-fashion-group.com/search", nil)
@@ -48,13 +50,14 @@ func TestBasicAuthMiddleware_NoAuthentication(t *testing.T) {
 }
 
 func TestBasicAuthMiddleware_WrongPassword(t *testing.T) {
-	var handlerCalled bool
+	middleware := gfghttp.BasicAuthMiddleware("search", "gfc")
 
+	var handlerCalled bool
 	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		handlerCalled = true
 		w.WriteHeader(http.StatusCreated)
 	})
-	h = gfghttp.BasicAuthMiddleware(h, "search", "gfc")
+	h = middleware(h)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "https://global-fashion-group.com/search", nil)

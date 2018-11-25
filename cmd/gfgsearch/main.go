@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/guilherme-santos/gfgsearch/elasticsearch"
-	gfghttp "github.com/guilherme-santos/gfgsearch/http"
+	"github.com/guilherme-santos/gfgsearch/http"
 )
 
 func main() {
@@ -38,21 +38,16 @@ func main() {
 		return
 	}
 
-	searchHandler := gfghttp.NewSearchHandler(searchSvc)
-	serverMux := http.NewServeMux()
-	serverMux.Handle("/v1/search/products",
-		gfghttp.LogMiddleware(
-			gfghttp.BasicAuthMiddleware(searchHandler, "gfg", "search"),
-		),
-	)
+	searchHandler := http.NewSearchHandler(searchSvc)
 
-	srv := &http.Server{
-		Handler: serverMux,
-		Addr:    srvAddr,
-	}
-	log.Println("Running http server on", srv.Addr)
+	srv := http.NewServer()
+	srv.Use(http.LogMiddleware())
+	srv.Use(http.BasicAuthMiddleware("gfg", "search"))
+	srv.Handle("/v1/search/products", searchHandler)
 
-	err = srv.ListenAndServe()
+	log.Println("Running http server on", srvAddr)
+
+	err = srv.Listen(srvAddr)
 	if err != nil {
 		log.Fatalln("Unable to run http server:", err)
 	}
