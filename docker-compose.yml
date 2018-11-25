@@ -11,6 +11,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - 8080:80
+    restart: unless-stopped
     networks:
       - gfgnetwork
 
