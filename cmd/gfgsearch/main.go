@@ -12,6 +12,8 @@ import (
 
 func main() {
 	srvAddr := os.Getenv("HTTP_SERVER_ADDR")
+	srvAuthUser := os.Getenv("HTTP_SERVER_AUTH_USER")
+	srvAuthPasswd := os.Getenv("HTTP_SERVER_AUTH_PASSWD")
 	esURL := os.Getenv("ELASTICSEARCH_URL")
 	log := log.New(os.Stdout, "", log.LstdFlags)
 
@@ -42,7 +44,7 @@ func main() {
 
 	srv := http.NewServer()
 	srv.Use(http.LogMiddleware())
-	srv.Use(http.BasicAuthMiddleware("gfg", "search"))
+	srv.Use(http.BasicAuthMiddleware(srvAuthUser, srvAuthPasswd))
 	srv.Handle("/v1/search/products", searchHandler)
 
 	log.Println("Running http server on", srvAddr)

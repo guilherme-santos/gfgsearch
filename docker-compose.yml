@@ -6,6 +6,8 @@ services:
     build: .
     environment:
       - HTTP_SERVER_ADDR=:80
+      - HTTP_SERVER_AUTH_USER=gfg
+      - HTTP_SERVER_AUTH_PASSWD=search
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - 8080:80
