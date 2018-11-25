@@ -1,6 +1,17 @@
 version: '3.5'
 
 services:
+  gfgsearch:
+    image: guilherme-santos/gfgsearch:1.0.0
+    build: .
+    environment:
+      - HTTP_SERVER_ADDR=:80
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - 8080:80
+    networks:
+      - gfgnetwork
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
     environment:
