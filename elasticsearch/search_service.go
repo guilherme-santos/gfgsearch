@@ -17,6 +17,7 @@ var (
 	Type  = "products"
 )
 
+// SearchService is an elasticsearch implementation of gfgsearch.Searcher interface.
 type SearchService struct {
 	esClient *elastic.Client
 }
@@ -84,6 +85,9 @@ func (s *SearchService) LoadFile(filename string) error {
 		return err
 	}
 
+	// Elasticsearch is near realtime database, so we need
+	// to refresh to be sure the data will be available
+	// once we return from this func.
 	s.esClient.Refresh().Index(Index).Do(ctx)
 	return nil
 }

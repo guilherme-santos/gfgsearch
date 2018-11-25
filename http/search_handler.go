@@ -19,6 +19,8 @@ const (
 	sortParam    = "sort"
 )
 
+// DefaultPerPage will be use when clients do not specify per_page attribute in the
+// request.
 var DefaultPerPage = 30
 
 type SearchHandler struct {

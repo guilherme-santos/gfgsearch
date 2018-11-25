@@ -7,11 +7,15 @@ import (
 	"github.com/guilherme-santos/gfgsearch"
 )
 
+// Searcher is a mock implementation of gfgsearch.Searcher.
 type Searcher struct {
 	t *testing.T
 
+	// SearchInvoked will be set as true if method Search() is called.
 	SearchInvoked bool
-	SearchFn      func(ctx context.Context, term string, opt gfgsearch.Options) (*gfgsearch.Result, error)
+	// SearchFn should be set with your own implementation before you
+	// use this mock.
+	SearchFn func(ctx context.Context, term string, opt gfgsearch.Options) (*gfgsearch.Result, error)
 }
 
 func NewSearcher(t *testing.T) *Searcher {

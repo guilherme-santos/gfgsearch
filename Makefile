@@ -1,4 +1,5 @@
-# Pass TESTCASE when use make test or make integration test to control whick test will run
+# Pass TESTCASE when use make test or make integration-test to control which test will run
+# For example: make integration-test TESTCASE=TestSearch_SortByPriceDesc
 TESTCASE=
 RUN_TESTCASE := $(if $(TESTCASE),-run $(TESTCASE),)
 
