@@ -18,8 +18,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
     environment:
       - discovery.type=single-node
-    ports:
-      - 9200:9200
     networks:
       - gfgnetwork
 
