@@ -30,7 +30,7 @@ func TestGetOptionsFrom(t *testing.T) {
 	if assert.NotNil(t, opt.Filter["stock"]) {
 		assert.Equal(t, "d", opt.Filter["stock"])
 	}
-	assert.Empty(t, opt.Filter["invalid"])
+	assert.NotContains(t, opt.Filter, "invalid")
 	// SortBy
 	if assert.NotNil(t, opt.SortBy["title"]) {
 		assert.Equal(t, "asc", opt.SortBy["title"])
@@ -44,9 +44,9 @@ func TestGetOptionsFrom(t *testing.T) {
 	if assert.NotNil(t, opt.SortBy["stock"]) {
 		assert.Equal(t, "desc", opt.SortBy["stock"])
 	}
-	assert.Empty(t, opt.SortBy["invalid"])
-	assert.Empty(t, opt.SortBy["-wrong"])
-	assert.Empty(t, opt.SortBy["wrong"])
+	assert.NotContains(t, opt.SortBy, "invalid")
+	assert.NotContains(t, opt.SortBy, "-wrong")
+	assert.NotContains(t, opt.SortBy, "wrong")
 }
 
 func TestGetOptionsFrom_DefaultValues(t *testing.T) {

@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -41,14 +40,15 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	res, err := h.searcher.Search(ctx, term, opt)
 	if err != nil {
+		Logger.Println("Unable to search for products:", err)
 		// TODO add specific errors to response with the right status code.
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	body, err := json.Marshal(res)
 	if err != nil {
-		Logger.Printf("Unable to marshal response: %s", err)
+		Logger.Println("Unable to marshal response:", err)
 		newErrorResponse(w, http.StatusInternalServerError, httpError{
 			code:    "invalid_json",
 			message: err.Error(),
@@ -56,9 +56,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, string(body))
+	newResponse(w, http.StatusOK, body)
 }
 
 func getOptionsFrom(params url.Values) gfgsearch.Options {
@@ -80,9 +78,11 @@ func getOptionsFrom(params url.Values) gfgsearch.Options {
 	for _, f := range filters {
 		parts := strings.SplitN(f, ":", 2)
 		// if is missing the content ignore the filter
-		if len(parts) == 2 && gfgsearch.IsFieldSearchable(parts[0]) {
-			opt.Filter[parts[0]] = parts[1]
+		if len(parts) != 2 || !gfgsearch.IsValidField(parts[0]) {
+			continue
 		}
+
+		opt.Filter[parts[0]] = parts[1]
 	}
 
 	sort := strings.Split(params.Get(sortParam), ",")
@@ -96,7 +96,7 @@ func getOptionsFrom(params url.Values) gfgsearch.Options {
 			order = "asc"
 		}
 
-		if !gfgsearch.IsFieldSearchable(field) {
+		if !gfgsearch.IsValidField(field) {
 			continue
 		}
 

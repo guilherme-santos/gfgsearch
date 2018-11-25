@@ -22,10 +22,18 @@ func (e httpError) Error() string {
 func (e httpError) Code() string    { return e.code }
 func (e httpError) Message() string { return e.message }
 
-func newErrorResponse(w http.ResponseWriter, statusCode int, err error) {
+func newResponse(w http.ResponseWriter, statusCode int, body interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
+	switch body.(type) {
+	case []byte, string:
+		fmt.Fprintf(w, "%s", body)
+	default:
+		json.NewEncoder(w).Encode(body)
+	}
+}
 
+func newErrorResponse(w http.ResponseWriter, statusCode int, err error) {
 	body := make(map[string]interface{})
 	if httpErr, ok := err.(Error); ok {
 		body["code"] = httpErr.Code()
@@ -35,7 +43,5 @@ func newErrorResponse(w http.ResponseWriter, statusCode int, err error) {
 		body["message"] = err.Error()
 	}
 
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"error": body,
-	})
+	newResponse(w, statusCode, body)
 }
